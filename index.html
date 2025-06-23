@@ -16,9 +16,12 @@
       let output = "<table>";    
       for (let a in data) { 
         output += `
-          <tr>
-            <td><img src="${rootPath}controller/uploads/${data[a].avatar}" /></td>
-          </tr>
+         <tr>
+  <td><img src="${rootPath}controller/uploads/${data[a].avatar}" width="80" height="80" style="object-fit: cover;" /></td>
+  <td><span style="font-size: 18px; font-weight: 600;">${data[a].firstname}</span></td>
+  <td><span style="font-size: 18px; font-weight: 600;">${data[a].lastname}</span></td>
+</tr>
+
         `;
       }
       output += "</table>";
