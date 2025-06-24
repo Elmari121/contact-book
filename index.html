@@ -12,6 +12,7 @@
 
   <script src="config.js"></script>
   <script>
+    document.getElementById("refresh").addEventListener("click",fetchContacts); 
     function displayOutput(data) {
       let output = "<table>";    
       for (let a in data) { 
