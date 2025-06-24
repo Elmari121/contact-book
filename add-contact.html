@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Contact</title>
+</head>
+<body>
+  <h2>Add New Contact</h2>
+  <form id="addContactForm" enctype="multipart/form-data">
+    <input type="text" id="firstname" name="firstname" placeholder="First Name" required><br><br>
+    <input type="text" id="lastname" name="lastname" placeholder="Last Name" required><br><br>
+    <input type="email" id="email" name="email" placeholder="Email" required><br><br>
+    <input type="tel" id="phone" name="phone" placeholder="Phone" required><br><br>
+    <input type="file" id="avatar" name="avatar" accept="image/*" required><br><br>
+    <button type="submit">Save Contact</button>
+  </form>
+ <button type="button" id="homeLink">Home</button>
+  <script src="config.js"></script>
+  <script>
+    document.getElementById("addContactForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      let formData = new FormData();
+      formData.append("firstname", document.getElementById("firstname").value);
+      formData.append("lastname", document.getElementById("lastname").value);
+      formData.append("email", document.getElementById("email").value);
+      formData.append("phone", document.getElementById("phone").value);
+      formData.append("avatar", document.getElementById("avatar").files[0]);
+      formData.append("apiKey", apiKey);
+
+      fetch(rootPath + "controller/add-contact/", {
+        method: "POST",
+        body: formData
+      })
+      .then(response => response.text())
+      .then(data => {
+        if (data == "1") {
+          alert("Contact added successfully!");
+          window.open("index.html", "_self");
+        } else {
+          alert("Failed to add contact: " + data);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    });
+  </script>
+</body>
+</html>
