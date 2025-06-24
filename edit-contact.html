@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Add Contact</title>
+  <title>Edit Contact</title>
   <style>
     form {
       max-width: 400px;
@@ -19,7 +19,7 @@
     }
 
     button {
-      background-color: #457b9d;
+      background-color: #6c63ff;
       color: white;
       border: none;
       border-radius: 4px;
@@ -27,46 +27,77 @@
     }
 
     button:hover {
-      background-color: #1d3557;
+      background-color: #4b4ae0;
+    }
+
+    .cancel-btn {
+      background-color: #ccc;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <h2>Add New Contact</h2>
-  <form id="addContactForm" enctype="multipart/form-data">
+  <h2>Edit Contact</h2>
+  <form id="editForm" enctype="multipart/form-data">
+    <input type="hidden" id="id" name="id">
     <input type="text" id="firstname" name="firstname" placeholder="First Name" required>
     <input type="text" id="lastname" name="lastname" placeholder="Last Name" required>
     <input type="email" id="email" name="email" placeholder="Email" required>
     <input type="tel" id="phone" name="phone" placeholder="Phone" required>
-    <input type="file" id="avatar" name="avatar" accept="image/*" required>
-    <button type="submit">Save Contact</button>
-    <button type="button" onclick="window.location.href='index.html'">Cancel</button>
+    <input type="file" id="avatar" name="avatar" accept="image/*">
+    <button type="submit">Update Contact</button>
+    <button type="button" class="cancel-btn" onclick="window.location.href='index.html'">Cancel</button>
   </form>
 
   <script src="config.js"></script>
   <script>
-    document.getElementById("addContactForm").addEventListener("submit", function(e) {
+    const params = new URLSearchParams(window.location.search);
+    const contactId = params.get("id");
+
+   
+    fetch(`${rootPath}controller/get-contact/?id=${contactId}&apiKey=${apiKey}`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("id").value = data.id;
+        document.getElementById("firstname").value = data.firstname;
+        document.getElementById("lastname").value = data.lastname;
+        document.getElementById("email").value = data.email;
+        document.getElementById("phone").value = data.phone;
+      });
+
+    document.getElementById("editForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       let formData = new FormData();
+      formData.append("id", document.getElementById("id").value);
       formData.append("firstname", document.getElementById("firstname").value);
       formData.append("lastname", document.getElementById("lastname").value);
       formData.append("email", document.getElementById("email").value);
       formData.append("phone", document.getElementById("phone").value);
-      formData.append("avatar", document.getElementById("avatar").files[0]);
+      
+      
+      const avatarFile = document.getElementById("avatar").files[0];
+      if (avatarFile) {
+        formData.append("avatar", avatarFile);
+      }
+
       formData.append("apiKey", apiKey);
 
-      fetch(rootPath + "controller/add-contact/", {
+      fetch(`${rootPath}controller/update-contact/`, {
         method: "POST",
         body: formData
       })
       .then(response => response.text())
       .then(data => {
         if (data == "1") {
-          alert("Contact added successfully!");
+          alert("Contact updated successfully!");
           window.location.href = "index.html";
         } else {
-          alert("Failed to add contact: " + data);
+          alert("Failed to update contact: " + data);
         }
       })
       .catch(error => console.error("Error:", error));
