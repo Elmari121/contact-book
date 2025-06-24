@@ -55,16 +55,23 @@
 </head>
 <body onload="fetchContacts()">
   <h2>My Contacts</h2>
+<div style="margin-bottom: 16px;">
   <button class="add-btn" onclick="window.location.href='add-contact.html'">+ Add Contact</button>
-  <div id="contact-list">Loading contacts...</div>
+  <button onclick="fetchContacts()" style="margin-left: 10px; background-color: #1d3557; color: white; padding: 8px 16px; border: none; border-radius: 4px;">🔁 Refresh</button>
+</div>
+<div id="contact-list">Loading contacts...</div>
 
   <script src="config.js"></script>
   <script>
-    function fetchContacts() {
-      fetch(`${rootPath}controller/get-contacts/?apiKey=${apiKey}`)
-        .then(response => response.json())
-        .then(data => displayOutput(data));
-    }
+  function fetchContacts() {
+  fetch(`${rootPath}controller/get-contacts/?apiKey=${apiKey}`)
+    .then(response => response.json())
+    .then(data => {
+      const reversed = data.reverse(); 
+      displayOutput(reversed);
+    });
+}
+
 
     function displayOutput(data) {
       let output = "";
